@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    
+    stages{
+        stage('clone'){
+            steps{
+                git 'https://github.com/SougataGhosh314/spring-boot-rest-learning.git'
+            }
+        }
+        stage('build'){
+            steps{
+                bat 'mvn clean'
+                bat 'mvn compile'
+            }
+            
+        }
+        stage('test & QA'){
+            steps{
+                bat 'mvn test'
+            }
+        }
+        stage('deploy'){
+            steps{
+                bat 'mvn install'    
+            }
+        }
+    }
+}
