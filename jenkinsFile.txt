@@ -35,11 +35,13 @@ pipeline {
         }
         stage('deploy'){
             steps{
-                try {
-                    bat 'mvn install'
-                }catch (exc) {
-                    echo 'Something didn\'t work and got some exceptions'
-                }  
+                script{
+                    try {
+                        bat 'mvn install'
+                    }catch (exc) {
+                        echo 'Something didn\'t work and got some exceptions'
+                    }
+                }
             }
         }
     }
