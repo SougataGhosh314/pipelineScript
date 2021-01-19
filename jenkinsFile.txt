@@ -9,8 +9,16 @@ pipeline {
         }
         stage('build'){
             steps{
-                bat 'mvn clean'
-                bat 'mvn compile'
+                parallel (
+                    "Taskone" : {
+                        bat 'mvn clean'
+                        //do some stuff
+                    },
+                    "Tasktwo" : {
+                        // Do some other stuff in parallel
+                        bat 'mvn compile'
+                    }
+                )
             }
             
         }
