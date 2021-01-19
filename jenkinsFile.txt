@@ -1,5 +1,11 @@
 pipeline {
     agent any
+
+    options {
+        timeout(time: 60, unit: 'MINUTES')
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+    }
     
     stages{
         stage('clone'){
@@ -29,8 +35,36 @@ pipeline {
         }
         stage('deploy'){
             steps{
-                bat 'mvn install'    
+                try {
+                    bat 'mvn install'
+                }catch (exc) {
+                    echo 'Something didn\'t work and got some exceptions'
+                    throw
+                }  
             }
+        }
+    }
+
+
+    post {
+        always {
+            echo 'always runs regardless of the completion status of the Pipeline run'
+            junit 'build/reports/**/*.xml'
+        }
+        success {
+            echo 'step will run only if the build is successful'
+            mail to: 'sougataghosh314@gmail.com',
+            subject: "Pipeline has failed: ${currentBuild.fullDisplayName}",
+            body: "Error in ${env.BUILD_URL}"
+        }
+        failure {
+            echo 'only when the Pipeline is currently in a "failed" state run, usually expressed in the Web UI with the red indicator.'
+        }
+        unstable {
+            echo 'current Pipeline has "unstable" state, usually by a failed test, code violations and other causes, in order to run. Usually represented in a web UI with a yellow indication.'
+        }
+        changed {
+            echo 'can only be run if the current Pipeline is running at a different state than the previously completed Pipeline'
         }
     }
 }
