@@ -51,7 +51,7 @@ pipeline {
         always {
             echo 'always runs regardless of the completion status of the Pipeline run'
             //junit 'build/reports/myReports/test_report.xml'
-            junit allowEmptyResults: true, testResults: 'build/reports/myReports/test_report.xml'
+            //junit allowEmptyResults: true, testResults: 'build/reports/myReports/test_report.xml'
         }
         success {
             echo 'step will run only if the build is successful'
